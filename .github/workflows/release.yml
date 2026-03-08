@@ -1,0 +1,34 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fontforge python3-fontforge jq unzip
+
+      - name: Download NF glyph sources
+        run: ./update.sh
+
+      - name: Download upstream fonts
+        run: ./download-upstream.sh
+
+      - name: Build font
+        run: ./build.sh
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/LowGravitasSymbols.ttf
+          generate_release_notes: true

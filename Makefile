@@ -1,4 +1,4 @@
-.PHONY: all update build install clean distclean
+.PHONY: all update build install clean distclean release
 
 all: build
 
@@ -14,6 +14,11 @@ install: dist/LowGravitasSymbols.ttf
 
 clean:
 	rm -rf build/ dist/
+
+release:
+	@VERSION=$$(cat VERSION) && \
+	git tag -a "v$$VERSION" -m "v$$VERSION" && \
+	git push origin "v$$VERSION"
 
 distclean: clean
 	rm -rf vendor/
