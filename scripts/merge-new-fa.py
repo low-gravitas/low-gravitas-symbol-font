@@ -17,6 +17,7 @@ import psMat
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[0])))
 from fontmetrics import lock_metrics
+from ranges import NF_RANGES, OVERFLOW_RANGES
 
 if len(sys.argv) < 4:
     print("Usage: fontforge -script merge-new-fa.py <patched.ttf> <upstream-fa-dir/> <output.ttf>")
@@ -93,8 +94,17 @@ for otf_path in upstream_otfs:
         if glyph.glyphname.startswith("."):
             continue
 
-        # Skip to next free codepoint (avoid collisions with Font Logos, Octicons, Material Design, etc.)
+        # Skip to next free codepoint, respecting range boundaries
+        fa_primary_end = NF_RANGES["Font Awesome"][1]
+        fa_overflow_start, fa_overflow_end = OVERFLOW_RANGES["Font Awesome"]
         while True:
+            # If we've exceeded the primary range, jump to overflow
+            if next_cp > fa_primary_end and next_cp < fa_overflow_start:
+                print(f"Primary FA range full at U+{fa_primary_end:04X}, continuing in overflow range U+{fa_overflow_start:05X}+")
+                next_cp = fa_overflow_start
+            if next_cp > fa_overflow_end:
+                print(f"ERROR: Font Awesome overflow range exhausted at U+{fa_overflow_end:05X}")
+                sys.exit(1)
             try:
                 existing = target[next_cp]
                 if existing.isWorthOutputting():

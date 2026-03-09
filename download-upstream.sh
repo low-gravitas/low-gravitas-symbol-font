@@ -13,12 +13,12 @@ done
 
 mkdir -p vendor/upstream-codicons vendor/upstream-fa vendor/upstream-octicons
 
-echo "Downloading latest Codicons from npm..."
-CODICONS_URL=$(curl -fsSL https://registry.npmjs.org/@vscode/codicons/latest | jq -r '.dist.tarball')
-curl -fsSL "$CODICONS_URL" | tar xz -C vendor/upstream-codicons/ --strip-components=2 package/dist/codicon.ttf
+echo "Downloading latest Codicons from GitHub Pages (built from main branch)..."
+curl -fsSL "https://microsoft.github.io/vscode-codicons/dist/codicon.ttf" \
+  -o vendor/upstream-codicons/codicon.ttf
 echo "  -> vendor/upstream-codicons/codicon.ttf"
 
-echo "Downloading latest Font Awesome 6 Free from GitHub..."
+echo "Downloading latest Font Awesome Free from GitHub..."
 FA_VERSION=$(curl -fsSL https://api.github.com/repos/FortAwesome/Font-Awesome/releases/latest | jq -r '.tag_name')
 curl -fsSL "https://github.com/FortAwesome/Font-Awesome/releases/download/${FA_VERSION}/fontawesome-free-${FA_VERSION}-desktop.zip" \
   -o /tmp/fa-desktop.zip

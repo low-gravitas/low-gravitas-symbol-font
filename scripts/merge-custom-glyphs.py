@@ -13,6 +13,7 @@ import psMat
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[0])))
 from fontmetrics import lock_metrics
+from ranges import NF_RANGES, OVERFLOW_RANGES
 
 if len(sys.argv) < 3:
     print("Usage: fontforge -script merge-custom-glyphs.py <input.ttf> <output.ttf>")
@@ -52,8 +53,16 @@ count = 0
 for svg_path in svgs:
     name = os.path.splitext(os.path.basename(svg_path))[0]
 
-    # Skip to next free codepoint
+    # Skip to next free codepoint, respecting range boundaries
+    custom_primary_end = NF_RANGES["Custom (Low Gravitas)"][1]
+    custom_overflow_start, custom_overflow_end = OVERFLOW_RANGES["Custom (Low Gravitas)"]
     while True:
+        if next_cp > custom_primary_end and next_cp < custom_overflow_start:
+            print(f"Primary custom range full at U+{custom_primary_end:04X}, continuing in overflow range U+{custom_overflow_start:05X}+")
+            next_cp = custom_overflow_start
+        if next_cp > custom_overflow_end:
+            print(f"ERROR: Custom glyph overflow range exhausted at U+{custom_overflow_end:05X}")
+            sys.exit(1)
         try:
             existing = target[next_cp]
             if existing.isWorthOutputting():

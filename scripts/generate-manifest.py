@@ -9,24 +9,11 @@ import os
 import sys
 import fontforge
 
-# Codepoint ranges to icon set names (destination ranges in the final font)
-SET_RANGES = [
-    (0xE000,  0xE00A,  "Pomicons"),
-    (0xE0A0,  0xE0D7,  "Powerline"),
-    (0xE200,  0xE2A9,  "Font Awesome Extension"),
-    (0xE300,  0xE3EB,  "Weather Icons"),
-    (0xE5FA,  0xE6B8,  "Seti-UI + Custom"),
-    (0xE700,  0xE8EF,  "Devicons"),
-    (0xE900,  0xE9FF,  "Custom (Low Gravitas)"),
-    (0xEA60,  0xEC84,  "Codicons"),
-    (0xED00,  0xF2FF,  "Font Awesome"),
-    (0xEE00,  0xEE0B,  "Progress Indicators"),
-    (0xF300,  0xF381,  "Font Logos"),
-    (0xF400,  0xFA10,  "Octicons"),
-    (0x2500,  0x259F,  "Box Drawing"),
-    (0x276C,  0x2771,  "Heavy Angle Brackets"),
-    (0xF0001, 0xF1AF0, "Material Design"),
-]
+sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[0])))
+from ranges import get_set_ranges
+
+# Codepoint ranges to icon set names (includes primary + overflow ranges)
+SET_RANGES = get_set_ranges()
 
 
 # Short prefixes for CSS class names: lg-{prefix}-{name}

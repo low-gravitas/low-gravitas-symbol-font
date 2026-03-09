@@ -18,6 +18,7 @@ import psMat
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(sys.argv[0])))
 from fontmetrics import lock_metrics
+from ranges import NF_RANGES, OVERFLOW_RANGES
 
 if len(sys.argv) < 4:
     print("Usage: fontforge -script merge-new-octicons.py <patched.ttf> <upstream-octicons-dir/> <output.ttf>")
@@ -56,9 +57,9 @@ for glyph in nf_oct.glyphs():
 print(f"NF-bundled Octicons has {len(nf_glyph_names)} glyphs")
 nf_oct.close()
 
-# Find the last used codepoint in the NF Octicons range (F400+) in the target
+# Find the last used codepoint in the NF Octicons range (F400–FA10) in the target
 last_nf_oct_cp = 0xF400
-for codepoint in range(0xF400, 0xF500):
+for codepoint in range(0xF400, 0xFA11):
     try:
         g = target[codepoint]
         if g.isWorthOutputting():
@@ -123,8 +124,16 @@ for name in sorted(icons.keys()):
 
     _, svg_path = icons[name]
 
-    # Skip to next free codepoint (avoid collisions with other glyph sets)
+    # Skip to next free codepoint, respecting range boundaries
+    oct_primary_end = NF_RANGES["Octicons"][1]
+    oct_overflow_start, oct_overflow_end = OVERFLOW_RANGES["Octicons"]
     while True:
+        if next_cp > oct_primary_end and next_cp < oct_overflow_start:
+            print(f"Primary Octicons range full at U+{oct_primary_end:04X}, continuing in overflow range U+{oct_overflow_start:05X}+")
+            next_cp = oct_overflow_start
+        if next_cp > oct_overflow_end:
+            print(f"ERROR: Octicons overflow range exhausted at U+{oct_overflow_end:05X}")
+            sys.exit(1)
         try:
             existing = target[next_cp]
             if existing.isWorthOutputting():
