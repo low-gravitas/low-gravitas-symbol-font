@@ -35,5 +35,12 @@ fontforge -script scripts/merge-new-octicons.py \
   build/step4.ttf vendor/upstream-octicons/ dist/LowGravitasSymbols.ttf
 
 echo ""
+echo "=== Step 6: Generate glyph manifest ==="
+mkdir -p site/
+fontforge -script scripts/generate-manifest.py \
+  dist/LowGravitasSymbols.ttf site/glyphs.json
+
+echo ""
 echo "=== Build complete ==="
 echo "Output: dist/LowGravitasSymbols.ttf"
+echo "Manifest: site/glyphs.json"

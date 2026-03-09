@@ -1,4 +1,4 @@
-.PHONY: all update build install clean distclean release
+.PHONY: all update build install clean distclean release site
 
 all: build
 
@@ -19,6 +19,12 @@ release:
 	@VERSION=$$(cat VERSION) && \
 	git tag -a "v$$VERSION" -m "v$$VERSION" && \
 	git push origin "v$$VERSION"
+
+site: dist/LowGravitasSymbols.ttf
+	mkdir -p site/
+	fontforge -script scripts/generate-manifest.py dist/LowGravitasSymbols.ttf site/glyphs.json
+	cp dist/LowGravitasSymbols.ttf site/
+	cp VERSION site/
 
 distclean: clean
 	rm -rf vendor/

@@ -2,3 +2,7 @@ vendor/
 build/
 dist/
 .claude/
+site/glyphs.json
+site/LowGravitasSymbols.ttf
+site/low-gravitas-symbols.css
+site/VERSION
