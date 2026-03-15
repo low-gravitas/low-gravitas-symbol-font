@@ -4,413 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Low Gravitas Symbols — Glyph Browser</title>
-<style>
-@font-face {
-  font-family: 'LowGravitasSymbols';
-  src: url('LowGravitasSymbols.ttf') format('truetype');
-  font-display: swap;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --border: #30363d;
-  --text: #e6edf3;
-  --text-dim: #8b949e;
-  --accent: #58a6ff;
-  --accent-hover: #79c0ff;
-  --toast-text: #000;
-  --shadow-alpha: 0.4;
-  --glow: rgba(188, 140, 255, 0.5);
-  --glyph-size: 28px;
-  --card-size: 130px;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #ffffff; --surface: #f6f8fa; --border: #d0d7de;
-    --text: #1f2328; --text-dim: #656d76; --accent: #0969da;
-    --accent-hover: #0550ae; --toast-text: #fff; --shadow-alpha: 0.15;
-    --glow: rgba(130, 80, 223, 0.4);
-  }
-}
-[data-theme="light"] {
-  --bg: #ffffff; --surface: #f6f8fa; --border: #d0d7de;
-  --text: #1f2328; --text-dim: #656d76; --accent: #0969da;
-  --accent-hover: #0550ae; --toast-text: #fff; --shadow-alpha: 0.15;
-  --glow: rgba(130, 80, 223, 0.4);
-}
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-nav .nav-left {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-nav .nav-left .brand {
-  font-family: 'LowGravitasSymbols', monospace;
-  color: var(--accent);
-  margin-right: 6px;
-}
-
-nav .nav-right {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-nav a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 14px;
-}
-nav a:hover { color: var(--accent); }
-
-#theme-toggle {
-  background: none;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 4px 8px;
-  cursor: pointer;
-  font-size: 16px;
-  line-height: 1;
-  transition: border-color 0.15s;
-  font-family: 'LowGravitasSymbols', monospace;
-  color: var(--text);
-}
-#theme-toggle:hover { border-color: var(--accent); }
-
-.toolbar {
-  padding: 12px 24px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  position: sticky;
-  top: 57px;
-  z-index: 9;
-}
-
-.toolbar-row {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.toolbar-hint {
-  color: var(--text-dim);
-  font-size: 12px;
-  margin-top: 6px;
-}
-
-#search {
-  flex: 1;
-  min-width: 200px;
-  padding: 8px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-size: 14px;
-  outline: none;
-}
-#search:focus { border-color: var(--accent); }
-
-#set-filter {
-  padding: 8px 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
-}
-#set-filter:focus { border-color: var(--accent); }
-
-#count {
-  color: var(--text-dim);
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-#grid {
-  position: relative;
-  overflow-y: auto;
-  padding: 12px 16px;
-}
-
-#container { position: relative; }
-
-.card {
-  position: absolute;
-  width: var(--card-size);
-  height: var(--card-size);
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.2s;
-  overflow: hidden;
-  padding: 4px;
-  user-select: none;
-}
-
-.card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 12px var(--glow);
-}
-
-.card.selected {
-  border-color: var(--accent);
-  box-shadow: inset 0 0 0 1px var(--accent);
-}
-
-.card .select-badge {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--toast-text);
-  font-size: 10px;
-  line-height: 16px;
-  text-align: center;
-  display: none;
-}
-
-.card.selected .select-badge { display: block; }
-
-.card .glyph {
-  font-family: 'LowGravitasSymbols', monospace;
-  font-size: var(--glyph-size);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.card .name {
-  font-size: 11px;
-  color: var(--text-dim);
-  text-align: center;
-  line-height: 1.2;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 4px;
-}
-
-.card .set {
-  font-size: 9px;
-  color: var(--text-dim);
-  opacity: 0.6;
-  text-align: center;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 4px;
-}
-
-.card .cp {
-  font-size: 10px;
-  color: var(--accent);
-  font-family: monospace;
-}
-
-.copy-menu {
-  position: fixed;
-  z-index: 50;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 4px 0;
-  min-width: 180px;
-  box-shadow: 0 8px 24px rgba(0,0,0,var(--shadow-alpha));
-}
-
-.copy-menu button {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 8px 14px;
-  background: none;
-  border: none;
-  color: var(--text);
-  font-size: 13px;
-  cursor: pointer;
-  text-align: left;
-  gap: 12px;
-}
-
-.copy-menu button:hover { background: var(--border); }
-.copy-menu button .label { color: var(--text-dim); font-size: 11px; }
-.copy-menu .divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--accent);
-  color: var(--toast-text);
-  padding: 8px 20px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  opacity: 0;
-  transition: transform 0.3s, opacity 0.3s;
-  pointer-events: none;
-  z-index: 100;
-}
-
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
-
-#selection-panel {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: var(--surface);
-  border-top: 1px solid var(--border);
-  padding: 10px 24px;
-  display: none;
-  box-shadow: 0 -4px 16px rgba(0,0,0,var(--shadow-alpha));
-}
-
-#selection-panel.visible {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-#selection-panel .sel-icons {
-  flex: 1;
-  display: flex;
-  gap: 4px;
-  overflow-x: auto;
-  font-family: 'LowGravitasSymbols', monospace;
-  font-size: 20px;
-  padding: 2px 0;
-}
-
-#selection-panel .sel-icon {
-  cursor: pointer;
-  padding: 2px 4px;
-  border-radius: 4px;
-  transition: background 0.15s;
-  flex-shrink: 0;
-}
-
-#selection-panel .sel-icon:hover { background: var(--border); }
-
-#selection-panel .sel-count {
-  color: var(--text-dim);
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-#selection-panel button {
-  padding: 6px 14px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--text);
-  font-size: 13px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: border-color 0.15s;
-}
-
-#selection-panel button:hover { border-color: var(--accent); }
-
-#selection-panel button.primary {
-  background: var(--accent);
-  color: var(--toast-text);
-  border-color: var(--accent);
-}
-
-#selection-panel button.primary:hover {
-  background: var(--accent-hover);
-  border-color: var(--accent-hover);
-}
-
-#loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  color: var(--text-dim);
-  font-size: 14px;
-}
-
-footer {
-  border-top: 1px solid var(--border);
-  padding: 16px 24px;
-  text-align: center;
-  color: var(--text-dim);
-  font-size: 12px;
-}
-footer a { color: var(--text-dim); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-</style>
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="browser.css">
 </head>
 <body>
 
+<a href="#grid" class="skip-link">Skip to content</a>
+
 <nav>
-  <a href="index.html" class="nav-left" style="text-decoration:none;color:var(--text)"><span class="brand">&#xE900;</span> Low Gravitas Symbols</a>
+  <a href="index.html" class="nav-left" style="text-decoration:none;color:var(--text)"><span class="brand" aria-hidden="true">&#xE900;</span> Low Gravitas Symbols</a>
   <div class="nav-right">
     <a href="index.html">Home</a>
     <a href="https://github.com/mikeabney/low-gravitas-symbol-font">GitHub</a>
-    <button id="theme-toggle"></button>
+    <button id="theme-toggle" aria-label="Toggle light/dark theme"></button>
   </div>
 </nav>
 
-<div class="toolbar">
-  <div class="toolbar-row">
-    <input id="search" type="text" placeholder="Search glyphs by name..." autocomplete="off">
-    <select id="set-filter">
-      <option value="">All Sets</option>
-    </select>
-    <span id="count"></span>
+<main>
+  <h1 class="sr-only">Low Gravitas Symbols Glyph Browser</h1>
+  <div class="toolbar">
+    <div class="toolbar-row">
+      <label for="search" class="sr-only">Search glyphs</label>
+      <input id="search" type="text" placeholder="Search by name or hex code (e.g. E0C4)..." autocomplete="off">
+      <label for="set-filter" class="sr-only">Filter by icon set</label>
+      <select id="set-filter">
+        <option value="">All Sets</option>
+      </select>
+      <label for="sort-order" class="sr-only">Sort order</label>
+      <select id="sort-order">
+        <option value="name">Sort: Name</option>
+        <option value="codepoint">Sort: Codepoint</option>
+      </select>
+      <span id="count" aria-live="polite" aria-atomic="true"></span>
+    </div>
+    <div class="toolbar-hint">Arrows navigate. Space/click to inspect. Enter/&#8984;-click to collect. Shift extends range.</div>
   </div>
-  <div class="toolbar-hint">Click for copy options. Double-click to select for CSS export.</div>
-</div>
 
-<div id="grid">
-  <div id="loading">Loading glyphs...</div>
-  <div id="container"></div>
-</div>
+  <div id="grid">
+    <div id="loading">Loading glyphs...</div>
+    <div id="container" role="grid" aria-label="Glyph results" tabindex="0"></div>
+  </div>
+</main>
 
 <div id="selection-panel">
   <span class="sel-count" id="sel-count"></span>
@@ -419,7 +53,7 @@ footer a:hover { color: var(--accent); }
   <button id="sel-download" class="primary">Download CSS</button>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <footer>
   &copy; 2026 <a href="https://github.com/mikeabney">Mike Abney</a>.
@@ -428,153 +62,178 @@ footer a:hover { color: var(--accent); }
 
 <script>
 (function() {
-  // --- Theme toggle ---
+  // ============================================================
+  //  SETUP
+  // ============================================================
+  const navEl = document.querySelector('nav');
+  function updateNavHeight() {
+    document.documentElement.style.setProperty('--nav-height', navEl.offsetHeight + 'px');
+  }
+  updateNavHeight();
+  window.addEventListener('resize', updateNavHeight);
+
+  // --- Theme ---
   const themeBtn = document.getElementById('theme-toggle');
   let userTheme = sessionStorage.getItem('theme') || null;
   if (userTheme) document.documentElement.setAttribute('data-theme', userTheme);
-  themeBtn.textContent = String.fromCodePoint(0xF050E); // theme-light-dark
-  themeBtn.title = 'Toggle light/dark theme';
+  themeBtn.textContent = String.fromCodePoint(0xF050E);
+  function getTheme() { return userTheme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'); }
+  function applyTheme() { userTheme ? document.documentElement.setAttribute('data-theme', userTheme) : document.documentElement.removeAttribute('data-theme'); }
+  themeBtn.addEventListener('click', () => { userTheme = getTheme() === 'dark' ? 'light' : 'dark'; sessionStorage.setItem('theme', userTheme); applyTheme(); });
+  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (!userTheme) applyTheme(); });
 
-  function getTheme() {
-    if (userTheme) return userTheme;
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  }
-
-  function applyTheme() {
-    if (userTheme) document.documentElement.setAttribute('data-theme', userTheme);
-    else document.documentElement.removeAttribute('data-theme');
-  }
-
-  themeBtn.addEventListener('click', () => {
-    userTheme = getTheme() === 'dark' ? 'light' : 'dark';
-    sessionStorage.setItem('theme', userTheme);
-    applyTheme();
-  });
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-    if (!userTheme) applyTheme();
-  });
-
-  // --- Grid ---
-  const CARD_W = 136;
-  const CARD_H = 136;
-  const GAP = 6;
-
-  let allGlyphs = [];
-  let filtered = [];
-  let cols = 1;
-  let padLeft = 0;
-  let visibleCards = new Map();
-  let scrollRAF = null;
-  const selected = new Map();
+  // ============================================================
+  //  STATE
+  // ============================================================
+  const CARD_W = 136, CARD_H = 136, GAP = 6;
+  let allGlyphs = [], filtered = [], cols = 1, padLeft = 0;
+  let visibleCards = new Map(), scrollRAF = null, currentSort = 'name';
+  const collection = new Map();          // cp -> glyph (the CSS export set)
+  let activeGridIndex = 0;               // roving tabindex focus
+  let anchorIndex = -1;                  // for shift range operations
 
   const container = document.getElementById('container');
   const searchInput = document.getElementById('search');
   const setFilter = document.getElementById('set-filter');
+  const sortOrder = document.getElementById('sort-order');
   const countEl = document.getElementById('count');
   const toast = document.getElementById('toast');
   const loading = document.getElementById('loading');
 
-  fetch('glyphs.json')
-    .then(r => r.json())
-    .then(data => {
-      allGlyphs = data;
-      loading.style.display = 'none';
-      populateSets();
-      // Apply set from URL query param if present
-      const params = new URLSearchParams(window.location.search);
-      const setParam = params.get('set');
-      if (setParam && [...setFilter.options].some(o => o.value === setParam)) {
-        setFilter.value = setParam;
-      }
-      applyFilter();
-    })
-    .catch(() => { loading.textContent = 'Failed to load glyphs.json'; });
+  // ============================================================
+  //  CONTAINER FOCUS DELEGATION (Tab / Shift+Tab)
+  // ============================================================
+  let lastFocusWasCard = false;
+  container.addEventListener('focus', (e) => {
+    if (e.target !== container || filtered.length === 0) return;
+    if (lastFocusWasCard) { lastFocusWasCard = false; sortOrder.focus(); return; }
+    e.preventDefault();
+    ensureCardVisible(activeGridIndex);
+    renderVisible();
+    const card = visibleCards.get(activeGridIndex);
+    if (card) card.focus();
+  });
+  container.addEventListener('focusout', (e) => {
+    if (e.target && e.target.closest && e.target.closest('.card')) {
+      lastFocusWasCard = true;
+      requestAnimationFrame(() => { lastFocusWasCard = false; });
+    }
+  });
+
+  // Prevent browser text selection on shift+click inside grid
+  container.addEventListener('mousedown', (e) => {
+    if (e.shiftKey) e.preventDefault();
+  });
+
+  // ============================================================
+  //  DATA LOADING & FILTERING
+  // ============================================================
+  fetch('glyphs.json').then(r => r.json()).then(data => {
+    allGlyphs = data;
+    loading.style.display = 'none';
+    populateSets();
+    const params = new URLSearchParams(window.location.search);
+    const setParam = params.get('set');
+    if (setParam && [...setFilter.options].some(o => o.value === setParam)) setFilter.value = setParam;
+    const sortParam = params.get('sort');
+    if (sortParam === 'codepoint' || sortParam === 'name') { currentSort = sortParam; sortOrder.value = sortParam; }
+    applyFilter();
+    const glyphParam = params.get('glyph');
+    if (glyphParam) {
+      const hex = glyphParam.replace(/^(U\+|0x)/i, '').toUpperCase();
+      const g = allGlyphs.find(g => g.hex.toUpperCase() === hex);
+      if (g) { const idx = filtered.indexOf(g); if (idx >= 0) { activeGridIndex = idx; scrollToGlyphIndex(idx); openDetailModal(idx); } }
+    }
+  }).catch(() => { loading.textContent = 'Failed to load glyphs.json'; });
 
   function populateSets() {
-    const sets = new Set(allGlyphs.map(g => g.set));
-    [...sets].sort().forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s;
-      setFilter.appendChild(opt);
-    });
+    const sets = [...new Set(allGlyphs.map(g => g.set))].sort();
+    sets.forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; setFilter.appendChild(o); });
   }
 
   let debounceTimer;
-  searchInput.addEventListener('input', () => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(applyFilter, 150);
-  });
+  searchInput.addEventListener('input', () => { clearTimeout(debounceTimer); debounceTimer = setTimeout(applyFilter, 150); });
   setFilter.addEventListener('change', applyFilter);
+  sortOrder.addEventListener('change', () => { currentSort = sortOrder.value; applyFilter(); });
 
   function applyFilter() {
-    const query = searchInput.value.toLowerCase().trim();
+    const query = searchInput.value.trim(), queryLower = query.toLowerCase();
     const set = setFilter.value;
+    const hexQuery = query.replace(/^(U\+|0x)/i, '').toUpperCase();
+    const isHex = /^[0-9A-F]+$/.test(hexQuery) && hexQuery.length >= 2;
     filtered = allGlyphs.filter(g => {
       if (set && g.set !== set) return false;
-      if (query && !g.name.toLowerCase().includes(query)) return false;
+      if (query) { if (!g.name.toLowerCase().includes(queryLower) && !(isHex && g.hex.toUpperCase().includes(hexQuery))) return false; }
       return true;
     });
+    filtered.sort(currentSort === 'name'
+      ? (a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' })
+      : (a, b) => a.cp - b.cp);
+    activeGridIndex = 0;
+    anchorIndex = -1;
     countEl.textContent = filtered.length.toLocaleString() + ' glyphs';
     layoutAndRender();
   }
 
+  // ============================================================
+  //  GRID LAYOUT & VIRTUAL RENDERING
+  // ============================================================
   function layoutAndRender() {
     const gridWidth = container.clientWidth;
     cols = Math.max(1, Math.floor((gridWidth + GAP) / (CARD_W + GAP)));
-    const usedWidth = cols * (CARD_W + GAP) - GAP;
-    padLeft = Math.floor((gridWidth - usedWidth) / 2);
-    const rows = Math.ceil(filtered.length / cols);
-    container.style.height = (rows * (CARD_H + GAP) - GAP) + 'px';
-    visibleCards.forEach(card => card.remove());
+    padLeft = Math.floor((gridWidth - (cols * (CARD_W + GAP) - GAP)) / 2);
+    container.style.height = (Math.ceil(filtered.length / cols) * (CARD_H + GAP) - GAP) + 'px';
+    visibleCards.forEach(c => c.remove());
     visibleCards.clear();
     renderVisible();
   }
 
   function renderVisible() {
-    const scrollTop = window.scrollY - container.offsetTop;
-    const viewHeight = window.innerHeight;
-    const buffer = CARD_H * 3;
+    const scrollTop = window.scrollY - container.offsetTop, viewHeight = window.innerHeight, buffer = CARD_H * 3;
     const startRow = Math.max(0, Math.floor((scrollTop - buffer) / (CARD_H + GAP)));
     const endRow = Math.min(Math.ceil(filtered.length / cols), Math.ceil((scrollTop + viewHeight + buffer) / (CARD_H + GAP)));
-    const startIdx = startRow * cols;
-    const endIdx = Math.min(endRow * cols, filtered.length);
-
+    const startIdx = startRow * cols, endIdx = Math.min(endRow * cols, filtered.length);
     const toRemove = [];
-    visibleCards.forEach((card, idx) => {
-      if (idx < startIdx || idx >= endIdx) { card.remove(); toRemove.push(idx); }
-    });
+    visibleCards.forEach((card, idx) => { if (idx < startIdx || idx >= endIdx) { card.remove(); toRemove.push(idx); } });
     toRemove.forEach(idx => visibleCards.delete(idx));
 
     for (let i = startIdx; i < endIdx; i++) {
       if (visibleCards.has(i)) continue;
-      const g = filtered[i];
-      const row = Math.floor(i / cols);
-      const col = i % cols;
-
+      const g = filtered[i], row = Math.floor(i / cols), col = i % cols;
       const card = document.createElement('div');
-      card.className = 'card' + (selected.has(g.cp) ? ' selected' : '');
-      card.style.left = padLeft + col * (CARD_W + GAP) + 'px';
-      card.style.top = row * (CARD_H + GAP) + 'px';
-      card.style.width = CARD_W + 'px';
-      card.style.height = CARD_H + 'px';
+      card.className = 'card' + (collection.has(g.cp) ? ' collected' : '');
+      card.style.cssText = 'left:' + (padLeft + col * (CARD_W + GAP)) + 'px;top:' + (row * (CARD_H + GAP)) + 'px;width:' + CARD_W + 'px;height:' + CARD_H + 'px';
       card.dataset.cp = g.cp;
-
-      const charStr = String.fromCodePoint(g.cp);
+      card.dataset.idx = i;
+      card.setAttribute('role', 'gridcell');
+      card.setAttribute('tabindex', i === activeGridIndex ? '0' : '-1');
+      card.setAttribute('aria-label', g.name + ', U+' + g.hex + ', ' + g.set + (collection.has(g.cp) ? ', collected' : ''));
+      const ch = String.fromCodePoint(g.cp);
       card.innerHTML =
-        '<span class="select-badge">\u2713</span>' +
-        '<span class="glyph">' + charStr + '</span>' +
+        '<span class="collect-badge">\u2713</span>' +
+        '<span class="glyph" aria-hidden="true">' + ch + '</span>' +
         '<span class="name" title="' + escAttr(g.name) + '">' + esc(g.name) + '</span>' +
         '<span class="set">' + esc(g.set) + '</span>' +
         '<span class="cp">U+' + g.hex + '</span>';
 
-      card.addEventListener('click', (e) => showCopyMenu(e, g, charStr));
-      card.addEventListener('dblclick', (e) => {
-        e.preventDefault();
-        closeCopyMenu();
-        toggleSelection(g);
+      card.addEventListener('focus', () => { activeGridIndex = i; ensureCardVisible(i); });
+      card.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey) {
+          // Cmd/Ctrl+Click: toggle single item in collection
+          setActiveGridIndex(i);
+          anchorIndex = i;
+          toggleCollect(filtered[i]);
+        } else if (e.shiftKey) {
+          // Shift+Click: range-add from anchor to here
+          const from = anchorIndex >= 0 ? anchorIndex : activeGridIndex;
+          setActiveGridIndex(i, false);
+          addRange(from, i);
+        } else {
+          // Plain click: focus + open modal
+          setActiveGridIndex(i);
+          openDetailModal(i);
+        }
       });
-
       container.appendChild(card);
       visibleCards.set(i, card);
     }
@@ -583,180 +242,345 @@ footer a:hover { color: var(--accent); }
   function escAttr(s) { return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
   function esc(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 
-  // --- Copy menu ---
-  let activeMenu = null;
-  let clickTimer = null;
-
-  function closeCopyMenu() {
-    if (activeMenu) { activeMenu.remove(); activeMenu = null; }
+  // ============================================================
+  //  ROVING TABINDEX & SCROLL
+  // ============================================================
+  function setActiveGridIndex(newIdx, shouldFocus) {
+    if (newIdx < 0 || newIdx >= filtered.length) return;
+    const old = visibleCards.get(activeGridIndex);
+    if (old) old.setAttribute('tabindex', '-1');
+    activeGridIndex = newIdx;
+    ensureCardVisible(newIdx);
+    const card = visibleCards.get(newIdx);
+    if (card) { card.setAttribute('tabindex', '0'); if (shouldFocus !== false) card.focus(); }
   }
 
-  document.addEventListener('click', (e) => {
-    if (activeMenu && !activeMenu.contains(e.target)) closeCopyMenu();
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCopyMenu(); });
-
-  function showCopyMenu(e, g, charStr) {
-    // Delay to distinguish from double-click
-    if (clickTimer) { clearTimeout(clickTimer); clickTimer = null; return; }
-    clickTimer = setTimeout(() => {
-      clickTimer = null;
-      _openCopyMenu(e, g, charStr);
-    }, 200);
+  function ensureCardVisible(idx) {
+    const row = Math.floor(idx / cols);
+    const cardTop = container.offsetTop + row * (CARD_H + GAP);
+    const cardBottom = cardTop + CARD_H;
+    const toolbar = document.querySelector('.toolbar');
+    const headerH = navEl.offsetHeight + (toolbar ? toolbar.offsetHeight : 0);
+    const footerEl = document.querySelector('footer');
+    const footerH = footerEl ? footerEl.offsetHeight : 0;
+    const usableTop = window.scrollY + headerH;
+    const usableBottom = window.scrollY + window.innerHeight - footerH;
+    const rowPad = CARD_H + GAP;
+    if (cardTop - rowPad < usableTop) {
+      window.scrollTo({ top: Math.max(0, cardTop - headerH - rowPad) });
+    } else if (cardBottom + rowPad > usableBottom) {
+      window.scrollTo({ top: cardBottom + rowPad - window.innerHeight + footerH });
+    }
+    renderVisible();
   }
 
-  function _openCopyMenu(e, g, charStr) {
-    e.stopPropagation();
-    closeCopyMenu();
+  function scrollToGlyphIndex(idx) {
+    if (idx < 0 || idx >= filtered.length) return;
+    const row = Math.floor(idx / cols);
+    window.scrollTo({ top: Math.max(0, container.offsetTop + row * (CARD_H + GAP) - window.innerHeight / 3), behavior: 'smooth' });
+  }
 
-    const utfEscape = g.cp <= 0xFFFF
-      ? '\\u' + g.hex.padStart(4, '0')
-      : '\\u{' + g.hex + '}';
-    const cssClass = g['class'] || '';
-    const isSelected = selected.has(g.cp);
-    const selLabel = isSelected ? 'Remove from selection' : 'Add to selection';
+  // ============================================================
+  //  COLLECTION MANAGEMENT
+  // ============================================================
+  function toggleCollect(g) {
+    if (collection.has(g.cp)) collection.delete(g.cp); else collection.set(g.cp, g);
+    refreshCollectionVisuals();
+  }
 
-    const menu = document.createElement('div');
-    menu.className = 'copy-menu';
-    menu.innerHTML =
-      '<button data-val="' + escAttr(charStr) + '"><span>Symbol</span><span class="label" style="font-family:LowGravitasSymbols,monospace;font-size:16px">' + charStr + '</span></button>' +
-      '<button data-val="U+' + g.hex + '"><span>Codepoint</span><span class="label">U+' + g.hex + '</span></button>' +
-      '<button data-val="' + escAttr(utfEscape) + '"><span>UTF escape</span><span class="label">' + esc(utfEscape) + '</span></button>' +
-      (cssClass ? '<button data-val="' + escAttr(cssClass) + '"><span>CSS class</span><span class="label">' + esc(cssClass) + '</span></button>' : '') +
-      '<div class="divider"></div>' +
-      '<button data-action="select"><span>' + selLabel + '</span></button>';
+  function addRange(from, to) {
+    const lo = Math.min(from, to), hi = Math.max(from, to);
+    for (let i = lo; i <= hi; i++) { const g = filtered[i]; if (g && !collection.has(g.cp)) collection.set(g.cp, g); }
+    refreshCollectionVisuals();
+  }
 
-    menu.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', async (ev) => {
-        ev.stopPropagation();
-        if (btn.dataset.action === 'select') {
-          toggleSelection(g);
-          closeCopyMenu();
-          return;
-        }
+  function refreshCollectionVisuals() {
+    updateCollectionPanel();
+    visibleCards.forEach((card) => {
+      const cp = parseInt(card.dataset.cp), idx = parseInt(card.dataset.idx), g = filtered[idx];
+      card.classList.toggle('collected', collection.has(cp));
+      if (g) card.setAttribute('aria-label', g.name + ', U+' + g.hex + ', ' + g.set + (collection.has(g.cp) ? ', collected' : ''));
+    });
+  }
+
+  // ============================================================
+  //  GRID KEYBOARD NAVIGATION
+  // ============================================================
+  function navigateGrid(e) {
+    const len = filtered.length;
+    if (len === 0) return;
+    let newIdx = activeGridIndex;
+    switch (e.key) {
+      case 'ArrowRight': e.preventDefault(); if (activeGridIndex + 1 < len) newIdx = activeGridIndex + 1; break;
+      case 'ArrowLeft':  e.preventDefault(); if (activeGridIndex > 0) newIdx = activeGridIndex - 1; break;
+      case 'ArrowDown':  e.preventDefault(); newIdx = Math.min(len - 1, activeGridIndex + cols); break;
+      case 'ArrowUp':    e.preventDefault(); newIdx = Math.max(0, activeGridIndex - cols); break;
+      case 'Home':       e.preventDefault(); newIdx = 0; break;
+      case 'End':        e.preventDefault(); newIdx = len - 1; break;
+      default: return;
+    }
+    if (newIdx === activeGridIndex) return;
+    if (e.shiftKey) {
+      if (anchorIndex === -1) anchorIndex = activeGridIndex;
+      setActiveGridIndex(newIdx);
+      addRange(anchorIndex, newIdx);
+    } else {
+      setActiveGridIndex(newIdx);
+    }
+  }
+
+  // ============================================================
+  //  DETAIL MODAL
+  // ============================================================
+  let modalBackdrop = null, modalDialog = null, modalIdx = -1;
+
+  function buildModalContent(g, idx) {
+    const ch = String.fromCodePoint(g.cp);
+    const utfEsc = g.cp <= 0xFFFF ? '\\u' + g.hex.padStart(4, '0') : '\\u{' + g.hex + '}';
+    const cls = g['class'] || '';
+    const inCollection = collection.has(g.cp);
+    const colLabel = inCollection ? 'Remove from collection' : 'Add to collection';
+    const link = window.location.pathname + '?glyph=' + g.hex;
+    const pDis = idx <= 0, nDis = idx >= filtered.length - 1;
+    return (
+      '<button class="modal-close" aria-label="Close dialog" title="Close (Esc or Space)">&times;</button>' +
+      '<div class="modal-specimen-nav">' +
+        '<button class="modal-nav prev" aria-label="Previous glyph" title="Previous glyph"' + (pDis ? ' disabled' : '') + '>&#8249;</button>' +
+        '<div class="glyph-specimen" aria-hidden="true">' + ch + '</div>' +
+        '<button class="modal-nav next" aria-label="Next glyph" title="Next glyph"' + (nDis ? ' disabled' : '') + '>&#8250;</button>' +
+      '</div>' +
+      '<div class="modal-info">' +
+        '<div class="glyph-name">' + esc(g.name) + '</div>' +
+        '<div class="glyph-meta"><span class="cp-val">U+' + g.hex + '</span> &middot; ' + esc(g.set) + '</div>' +
+        (cls ? '<div class="glyph-class">' + esc(cls) + '</div>' : '') +
+      '</div>' +
+      '<div class="modal-actions">' +
+        '<button data-val="' + escAttr(ch) + '"><span>Copy Symbol</span><span class="label symbol" aria-hidden="true">' + ch + '</span></button>' +
+        '<button data-val="U+' + g.hex + '"><span>Copy Codepoint</span><span class="label mono">U+' + g.hex + '</span></button>' +
+        '<button data-val="' + escAttr(utfEsc) + '"><span>Copy UTF Escape</span><span class="label mono">' + esc(utfEsc) + '</span></button>' +
+        (cls ? '<button data-val="' + escAttr(cls) + '"><span>Copy CSS Class</span><span class="label mono">' + esc(cls) + '</span></button>' : '') +
+        '<button data-val="' + escAttr(link) + '"><span>Copy Link</span><span class="label mono">?glyph=' + g.hex + '</span></button>' +
+      '</div>' +
+      '<div class="modal-footer"><button data-action="collect">' + colLabel + '</button></div>'
+    );
+  }
+
+  function bindModalEvents(g) {
+    modalDialog.querySelector('.modal-close').addEventListener('click', () => closeDetailModal());
+    modalDialog.querySelectorAll('.modal-actions button').forEach(btn => {
+      btn.addEventListener('click', async () => {
         const val = btn.getAttribute('data-val');
         try {
           await navigator.clipboard.writeText(val);
+          const lbl = btn.querySelector('.label'), orig = lbl ? lbl.outerHTML : '';
+          if (lbl) { lbl.outerHTML = '<span class="copied">\u2713 Copied</span>'; setTimeout(() => { const c = btn.querySelector('.copied'); if (c) c.outerHTML = orig; }, 1000); }
           showToast('Copied: ' + val);
-        } catch {
-          showToast(val);
-        }
-        closeCopyMenu();
+        } catch { showToast(val); }
       });
     });
-
-    document.body.appendChild(menu);
-    activeMenu = menu;
-
-    const mx = Math.min(e.clientX, window.innerWidth - menu.offsetWidth - 8);
-    const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 8);
-    menu.style.left = Math.max(0, mx) + 'px';
-    menu.style.top = Math.max(0, my) + 'px';
+    modalDialog.querySelector('[data-action="collect"]').addEventListener('click', () => {
+      toggleCollect(g);
+      modalDialog.querySelector('[data-action="collect"]').textContent = collection.has(g.cp) ? 'Remove from collection' : 'Add to collection';
+    });
+    modalDialog.querySelector('.modal-nav.prev').addEventListener('click', () => navigateModal(-1));
+    modalDialog.querySelector('.modal-nav.next').addEventListener('click', () => navigateModal(1));
+    // Focus trap
+    modalDialog.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const btns = modalDialog.querySelectorAll('button:not([disabled])');
+      if (e.shiftKey && document.activeElement === btns[0]) { e.preventDefault(); btns[btns.length - 1].focus(); }
+      else if (!e.shiftKey && document.activeElement === btns[btns.length - 1]) { e.preventDefault(); btns[0].focus(); }
+    });
   }
 
-  // --- Toast ---
+  function openDetailModal(idx) {
+    modalIdx = idx;
+    const g = filtered[idx];
+    if (!g) return;
+    if (modalDialog && modalBackdrop) {
+      modalDialog.innerHTML = buildModalContent(g, idx);
+      modalDialog.setAttribute('aria-label', 'Details for ' + g.name);
+      bindModalEvents(g);
+      const fb = modalDialog.querySelector('.modal-actions button');
+      if (fb) fb.focus();
+      history.replaceState(null, '', updateURL('glyph', g.hex));
+      return;
+    }
+    modalBackdrop = document.createElement('div');
+    modalBackdrop.className = 'modal-backdrop';
+    modalBackdrop.setAttribute('aria-hidden', 'true');
+    modalBackdrop.addEventListener('click', () => closeDetailModal());
+    document.body.appendChild(modalBackdrop);
+
+    modalDialog = document.createElement('div');
+    modalDialog.className = 'modal-dialog';
+    modalDialog.setAttribute('role', 'dialog');
+    modalDialog.setAttribute('aria-modal', 'true');
+    modalDialog.setAttribute('aria-label', 'Details for ' + g.name);
+    modalDialog.innerHTML = buildModalContent(g, idx);
+    bindModalEvents(g);
+    document.body.appendChild(modalDialog);
+    requestAnimationFrame(() => { modalBackdrop.classList.add('visible'); modalDialog.classList.add('visible'); });
+    const fb = modalDialog.querySelector('.modal-actions button');
+    if (fb) { fb.focus(); fb.classList.add('focus-force'); fb.addEventListener('blur', () => fb.classList.remove('focus-force'), { once: true }); }
+    history.replaceState(null, '', updateURL('glyph', g.hex));
+  }
+
+  function navigateModal(dir) {
+    // dir: -1 for prev, +1 for next, or ±cols for up/down
+    const newIdx = modalIdx + dir;
+    if (newIdx < 0 || newIdx >= filtered.length) return;
+    activeGridIndex = newIdx;
+    openDetailModal(newIdx);
+  }
+
+  function closeDetailModal(skipAnim) {
+    if (!modalDialog && !modalBackdrop) return;
+    history.replaceState(null, '', updateURL('glyph', null));
+    const restore = () => {
+      ensureCardVisible(activeGridIndex);
+      const card = visibleCards.get(activeGridIndex);
+      if (card) { card.setAttribute('tabindex', '0'); card.focus(); } else searchInput.focus();
+    };
+    if (skipAnim) {
+      if (modalDialog) modalDialog.remove(); if (modalBackdrop) modalBackdrop.remove();
+      modalDialog = null; modalBackdrop = null; return;
+    }
+    if (modalBackdrop) modalBackdrop.classList.remove('visible');
+    if (modalDialog) modalDialog.classList.remove('visible');
+    setTimeout(() => {
+      if (modalDialog) modalDialog.remove(); if (modalBackdrop) modalBackdrop.remove();
+      modalDialog = null; modalBackdrop = null; restore();
+    }, 150);
+  }
+
+  function updateURL(key, value) {
+    const url = new URL(window.location);
+    if (value === null) url.searchParams.delete(key); else url.searchParams.set(key, value);
+    return url;
+  }
+
+  // ============================================================
+  //  GLOBAL KEYBOARD HANDLER
+  // ============================================================
+  document.addEventListener('keydown', (e) => {
+    // --- MODAL OPEN ---
+    if (modalDialog) {
+      if (e.key === 'Escape') { closeDetailModal(); return; }
+      if (e.key === ' ') { e.preventDefault(); closeDetailModal(); return; }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); navigateModal(-1); return; }
+      if (e.key === 'ArrowRight') { e.preventDefault(); navigateModal(1); return; }
+      if (e.key === 'ArrowUp')    { e.preventDefault(); navigateModal(-cols); return; }
+      if (e.key === 'ArrowDown')  { e.preventDefault(); navigateModal(cols); return; }
+      if (e.key === 'Enter') {
+        const g = filtered[modalIdx];
+        // Only toggle if not on a copy-value button
+        if (g && !(document.activeElement && document.activeElement.getAttribute('data-val'))) {
+          e.preventDefault();
+          toggleCollect(g);
+          const btn = modalDialog.querySelector('[data-action="collect"]');
+          if (btn) btn.textContent = collection.has(g.cp) ? 'Remove from collection' : 'Add to collection';
+        }
+        return;
+      }
+      return;
+    }
+
+    // --- GRID CONTEXT ---
+    const active = document.activeElement;
+    const inGrid = active && (active.closest('#container') || active === container);
+    if (!inGrid) return;
+
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+      navigateGrid(e);
+      return;
+    }
+    if (e.key === ' ') { e.preventDefault(); openDetailModal(activeGridIndex); return; }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (e.shiftKey && anchorIndex >= 0 && anchorIndex !== activeGridIndex) {
+        // Shift+Enter: range-add from anchor to focus, then move anchor
+        addRange(anchorIndex, activeGridIndex);
+        anchorIndex = activeGridIndex;
+      } else {
+        // Plain Enter: toggle single item, set anchor
+        const g = filtered[activeGridIndex];
+        if (g) { anchorIndex = activeGridIndex; toggleCollect(g); }
+      }
+      return;
+    }
+    if (e.key === 'Escape') {
+      if (collection.size > 0) { collection.clear(); refreshCollectionVisuals(); showToast('Collection cleared'); }
+      return;
+    }
+    if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+      if (filtered.length > 0 && filtered.length <= 500) {
+        e.preventDefault();
+        filtered.forEach(g => { if (!collection.has(g.cp)) collection.set(g.cp, g); });
+        refreshCollectionVisuals();
+        showToast('Collected ' + filtered.length + ' glyphs');
+      }
+      return;
+    }
+  });
+
+  // ============================================================
+  //  TOAST
+  // ============================================================
   let toastTimer;
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 1500);
-  }
+  function showToast(msg) { toast.textContent = msg; toast.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 1500); }
 
-  // --- Selection management ---
+  // ============================================================
+  //  COLLECTION PANEL (bottom bar)
+  // ============================================================
   const selPanel = document.getElementById('selection-panel');
   const selIcons = document.getElementById('sel-icons');
   const selCount = document.getElementById('sel-count');
   const selClear = document.getElementById('sel-clear');
   const selDownload = document.getElementById('sel-download');
 
-  function toggleSelection(g) {
-    if (selected.has(g.cp)) {
-      selected.delete(g.cp);
-    } else {
-      selected.set(g.cp, g);
-    }
-    updateSelectionUI();
-    visibleCards.forEach((card) => {
-      const cp = parseInt(card.dataset.cp);
-      card.classList.toggle('selected', selected.has(cp));
-    });
-  }
-
-  function updateSelectionUI() {
-    if (selected.size === 0) {
-      selPanel.classList.remove('visible');
-      return;
-    }
+  function updateCollectionPanel() {
+    if (collection.size === 0) { selPanel.classList.remove('visible'); return; }
     selPanel.classList.add('visible');
-    selCount.textContent = selected.size + ' selected';
+    selCount.textContent = collection.size + ' collected';
     selIcons.innerHTML = '';
-    for (const [cp, g] of selected) {
+    for (const [cp, g] of collection) {
       const span = document.createElement('span');
       span.className = 'sel-icon';
       span.textContent = String.fromCodePoint(cp);
-      span.title = g.name + ' (click to remove)';
-      span.addEventListener('click', () => {
-        selected.delete(cp);
-        updateSelectionUI();
-        visibleCards.forEach((card) => {
-          if (parseInt(card.dataset.cp) === cp) card.classList.remove('selected');
-        });
-      });
+      span.setAttribute('role', 'button');
+      span.setAttribute('tabindex', '0');
+      span.setAttribute('aria-label', 'Remove ' + g.name + ' from collection');
+      const rm = () => { collection.delete(cp); updateCollectionPanel(); visibleCards.forEach(c => { if (parseInt(c.dataset.cp) === cp) c.classList.remove('collected'); }); };
+      span.addEventListener('click', rm);
+      span.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); rm(); } });
       selIcons.appendChild(span);
     }
   }
 
-  selClear.addEventListener('click', () => {
-    selected.clear();
-    updateSelectionUI();
-    visibleCards.forEach((card) => card.classList.remove('selected'));
-  });
+  selClear.addEventListener('click', () => { collection.clear(); updateCollectionPanel(); visibleCards.forEach(c => c.classList.remove('collected')); });
 
   selDownload.addEventListener('click', () => {
     const lines = [
-      "@font-face {",
-      "  font-family: 'LowGravitasSymbols';",
-      "  src: url('LowGravitasSymbols.ttf') format('truetype');",
-      "  font-display: swap;",
-      "}",
-      "",
-      "[class^='lg-'],",
-      "[class*=' lg-'] {",
-      "  font-family: 'LowGravitasSymbols';",
-      "  font-style: normal;",
-      "  font-weight: normal;",
-      "  font-variant: normal;",
-      "  text-transform: none;",
-      "  line-height: 1;",
-      "  -webkit-font-smoothing: antialiased;",
-      "  -moz-osx-font-smoothing: grayscale;",
-      "}",
-      "",
+      "@font-face {", "  font-family: 'LowGravitasSymbols';", "  src: url('LowGravitasSymbols.ttf') format('truetype');", "  font-display: swap;", "}", "",
+      "[class^='lg-'],", "[class*=' lg-'] {", "  font-family: 'LowGravitasSymbols';", "  font-style: normal;", "  font-weight: normal;",
+      "  font-variant: normal;", "  text-transform: none;", "  line-height: 1;", "  -webkit-font-smoothing: antialiased;", "  -moz-osx-font-smoothing: grayscale;", "}", "",
     ];
-    const sorted = [...selected.values()].sort((a, b) => a.cp - b.cp);
-    for (const g of sorted) {
-      const esc = g.cp <= 0xFFFF
-        ? '\\' + g.hex.padStart(4, '0')
-        : '\\' + g.hex.padStart(5, '0');
-      lines.push('.' + g['class'] + '::before { content: "' + esc + '"; }');
-    }
+    [...collection.values()].sort((a, b) => a.cp - b.cp).forEach(g => {
+      const e = g.cp <= 0xFFFF ? '\\' + g.hex.padStart(4, '0') : '\\' + g.hex.padStart(5, '0');
+      lines.push('.' + g['class'] + '::before { content: "' + e + '"; }');
+    });
     const blob = new Blob([lines.join('\n') + '\n'], { type: 'text/css' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'low-gravitas-symbols.css';
-    a.click();
+    const a = document.createElement('a'); a.href = url; a.download = 'low-gravitas-symbols.css'; a.click();
     URL.revokeObjectURL(url);
-    showToast('Downloaded CSS with ' + selected.size + ' icons');
+    showToast('Downloaded CSS with ' + collection.size + ' icons');
   });
 
-  // --- Scroll & resize ---
-  window.addEventListener('scroll', () => {
-    if (scrollRAF) return;
-    scrollRAF = requestAnimationFrame(() => { renderVisible(); scrollRAF = null; });
-  });
-
+  // ============================================================
+  //  SCROLL & RESIZE
+  // ============================================================
+  window.addEventListener('scroll', () => { if (scrollRAF) return; scrollRAF = requestAnimationFrame(() => { renderVisible(); scrollRAF = null; }); });
   window.addEventListener('resize', () => { layoutAndRender(); });
 })();
 </script>
