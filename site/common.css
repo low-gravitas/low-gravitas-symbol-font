@@ -6,38 +6,21 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Bridge variables: map site-specific names to Low Gravitas Zen palette */
 :root {
-  --bg: #0d1117;
-  --surface: #161b22;
-  --border: #30363d;
-  --text: #e6edf3;
-  --text-dim: #8b949e;
-  --accent: #58a6ff;
-  --accent-hover: #79c0ff;
-  --toast-text: #000;
+  --accent-hover: var(--lgz-bright-blue);
+  --toast-text: var(--text-on-accent);
   --shadow-alpha: 0.4;
-  --glow: rgba(188, 140, 255, 0.5);
-  --accent-secondary: #bc8cff;
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) {
-    --bg: #ffffff; --surface: #f6f8fa; --border: #d0d7de;
-    --text: #1f2328; --text-dim: #656d76; --accent: #0969da;
-    --accent-hover: #0550ae; --toast-text: #fff; --shadow-alpha: 0.15;
-    --glow: rgba(130, 80, 223, 0.4); --accent-secondary: #8250df;
-  }
+  --glow: rgba(128, 64, 208, 0.4);
+  --backdrop-alpha: 0.6;
 }
 [data-theme="light"] {
-  --bg: #ffffff; --surface: #f6f8fa; --border: #d0d7de;
-  --text: #1f2328; --text-dim: #656d76; --accent: #0969da;
-  --accent-hover: #0550ae; --toast-text: #fff; --shadow-alpha: 0.15;
-  --glow: rgba(130, 80, 223, 0.4); --accent-secondary: #8250df;
+  --glow: rgba(128, 64, 208, 0.3);
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  background: var(--bg);
+  background: var(--surface-raised);
   color: var(--text);
   min-height: 100vh;
 }
