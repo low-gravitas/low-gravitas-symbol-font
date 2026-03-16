@@ -48,31 +48,51 @@ if not svgs:
 
 print(f"Found {len(svgs)} custom glyph(s) in {glyphs_dir}")
 
-next_cp = 0xE900
-count = 0
+# Pinned codepoints: glyphs listed here always get their assigned codepoint,
+# regardless of filename sort order. This prevents existing codepoints from
+# shifting when new glyphs are added.
+PINNED_CODEPOINTS = {
+    "low-gravitas": 0xE900,
+    "kajabi":       0xE901,
+}
+
+# Process pinned glyphs first (in codepoint order), then unpinned (alphabetical)
+pinned_svgs = []
+unpinned_svgs = []
 for svg_path in svgs:
     name = os.path.splitext(os.path.basename(svg_path))[0]
+    if name in PINNED_CODEPOINTS:
+        pinned_svgs.append(svg_path)
+    else:
+        unpinned_svgs.append(svg_path)
+pinned_svgs.sort(key=lambda p: PINNED_CODEPOINTS[os.path.splitext(os.path.basename(p))[0]])
+ordered_svgs = pinned_svgs + unpinned_svgs
 
-    # Skip to next free codepoint, respecting range boundaries
-    custom_primary_end = NF_RANGES["Custom (Low Gravitas)"][1]
-    custom_overflow_start, custom_overflow_end = OVERFLOW_RANGES["Custom (Low Gravitas)"]
-    while True:
+custom_primary_end = NF_RANGES["Custom (Low Gravitas)"][1]
+custom_overflow_start, custom_overflow_end = OVERFLOW_RANGES["Custom (Low Gravitas)"]
+used_cps = set(PINNED_CODEPOINTS.values())
+next_cp = 0xE900
+count = 0
+
+for svg_path in ordered_svgs:
+    name = os.path.splitext(os.path.basename(svg_path))[0]
+
+    if name in PINNED_CODEPOINTS:
+        cp = PINNED_CODEPOINTS[name]
+    else:
+        # Find next free codepoint, skipping pinned ones
+        while next_cp in used_cps:
+            next_cp += 1
         if next_cp > custom_primary_end and next_cp < custom_overflow_start:
             print(f"Primary custom range full at U+{custom_primary_end:04X}, continuing in overflow range U+{custom_overflow_start:05X}+")
             next_cp = custom_overflow_start
         if next_cp > custom_overflow_end:
             print(f"ERROR: Custom glyph overflow range exhausted at U+{custom_overflow_end:05X}")
             sys.exit(1)
-        try:
-            existing = target[next_cp]
-            if existing.isWorthOutputting():
-                next_cp += 1
-                continue
-        except TypeError:
-            pass
-        break
+        cp = next_cp
+        next_cp += 1
 
-    glyph = target.createChar(next_cp, name)
+    glyph = target.createChar(cp, name)
     glyph.importOutlines(svg_path)
 
     # Scale to fit within the em square
@@ -93,8 +113,7 @@ for svg_path in svgs:
         glyph.transform(psMat.translate(x_offset, y_offset))
 
     glyph.width = cell_width
-    print(f"  U+{next_cp:04X} {name} <- {os.path.basename(svg_path)}")
-    next_cp += 1
+    print(f"  U+{cp:04X} {name} <- {os.path.basename(svg_path)}")
     count += 1
 
 print(f"Merged {count} custom glyph(s)")
