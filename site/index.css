@@ -1,12 +1,8 @@
-body {
-  display: flex;
-  flex-direction: column;
-}
+/* Index page styles — shared layout from low-gravitas-common.css */
 
-nav .nav-right { gap: 16px; }
+h2 { color: var(--lgz-yellow); }
 
 main {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -43,7 +39,7 @@ main {
 }
 
 main h1 {
-  font-size: 2.5rem;
+  font-size: 2.4rem;
   font-weight: 700;
   margin-bottom: 12px;
   color: var(--accent);
@@ -72,33 +68,10 @@ main p {
   margin-bottom: 48px;
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 22px;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.15s, border-color 0.15s, box-shadow 0.2s;
-  cursor: pointer;
-  border: 1px solid var(--border);
-  color: var(--text);
-  background: var(--bg);
-}
+/* Override shared .btn for darker background */
+.btn { background: var(--bg); }
 
-.btn:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 14px var(--glow);
-}
-
-.btn.primary {
-  background: var(--accent);
-  color: var(--toast-text);
-  border-color: var(--accent);
-}
-
+/* Override shared .btn.primary for hover effect */
 .btn.primary:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
@@ -131,7 +104,7 @@ main p {
   color: var(--accent);
 }
 
-.feature h2 { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.feature h2 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
 .feature p { font-size: 13px; color: var(--text-dim); margin-bottom: 0; line-height: 1.5; }
 
 .sets-preview {
@@ -171,18 +144,6 @@ main p {
 
 .set-pill .ct { color: var(--accent); font-family: monospace; margin-left: 4px; }
 
-.fade-in {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-icons span { animation: none; }
-  .fade-in { opacity: 1; transform: none; transition: none; }
 }

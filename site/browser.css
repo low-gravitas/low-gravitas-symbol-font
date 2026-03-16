@@ -120,7 +120,7 @@ nav {
   height: 16px;
   border-radius: 50%;
   background: var(--accent);
-  color: var(--toast-text);
+  color: var(--text-on-accent);
   font-size: 10px;
   line-height: 16px;
   text-align: center;
@@ -375,7 +375,7 @@ nav {
 .modal-footer button:hover { border-color: var(--accent); }
 .modal-footer button.primary {
   background: var(--accent);
-  color: var(--toast-text);
+  color: var(--text-on-accent);
   border-color: var(--accent);
 }
 .modal-footer button.primary:hover {
@@ -415,7 +415,7 @@ nav {
   left: 50%;
   transform: translateX(-50%) translateY(100px);
   background: var(--accent);
-  color: var(--toast-text);
+  color: var(--text-on-accent);
   padding: 8px 20px;
   border-radius: 6px;
   font-size: 13px;
@@ -497,7 +497,7 @@ nav {
 
 #selection-panel button.primary {
   background: var(--accent);
-  color: var(--toast-text);
+  color: var(--text-on-accent);
   border-color: var(--accent);
 }
 

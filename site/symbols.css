@@ -1,0 +1,24 @@
+/* Symbol font registration and site-specific overrides */
+
+@font-face {
+  font-family: 'LowGravitasSymbols';
+  src: url('LowGravitasSymbols.ttf') format('truetype');
+  font-display: swap;
+}
+
+.lg { font-family: 'LowGravitasSymbols', monospace; }
+
+/* Override shared theme toggle to use icon style */
+#theme-toggle {
+  padding: 8px 10px;
+  min-width: 36px;
+  min-height: 36px;
+  font-size: 16px;
+  line-height: 1;
+  font-family: 'LowGravitasSymbols', monospace;
+}
+
+/* Site-specific bridge variables */
+:root {
+  --backdrop-alpha: 0.6;
+}
