@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.3.0] - 2026-03-15
+
+### Fixed
+- 18 Powerline Extra glyph names (E0C0–E0D7) corrected to match Nerd Fonts
+  canonical names — e.g. "trapezoid-right-solid" → "pixelated-squares-small"
+
+### Added
+- Kajabi mark glyph at U+E901 using diagonal hatching for three-shade logo
+- Pinned codepoint system for custom glyphs — prevents codepoint shifts when
+  new glyphs are added
+- Glyph detail modal with 72px specimen, copy actions (symbol, codepoint, UTF
+  escape, CSS class, deep link), and prev/next navigation
+- Finder-style keyboard interaction: roving tabindex grid navigation, Space to
+  inspect, Enter to collect, Shift+Arrow/Shift+Click for range collection,
+  Cmd/Ctrl+Click for single toggle, Cmd/Ctrl+A for batch collection
+- Hex code search (e.g. "E0C4", "U+E0C4", "0xE0C4")
+- Sort toggle (name or codepoint)
+- WCAG 2.1 AA accessibility: focus trap, focus restoration, aria-labels,
+  aria-live regions, sr-only labels, skip-to-content link,
+  prefers-reduced-motion, keyboard-accessible cards and selection panel
+- Low Gravitas Zen color theme with warm-toned dark/light modes
+- Sticky footer on glyph browser page
+
+### Changed
+- CSS extracted into common.css, browser.css, and index.css (no more inline)
+- Surface hierarchy: --surface-raised for chrome, --bg for content, --surface
+  for mid-level elements
+- Selection renamed to "collection" throughout for conceptual clarity
+- GitHub org updated from mikeabney to low-gravitas
+- Heading hierarchy fixed on index.html (h3 → h2)
+- Brand glyph enlarged to 2em in nav header
+
 ## [0.2.0] - 2026-03-09
 
 ### Fixed
