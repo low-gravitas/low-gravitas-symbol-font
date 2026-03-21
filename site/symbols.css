@@ -6,8 +6,6 @@
   font-display: swap;
 }
 
-.lg { font-family: 'LowGravitasSymbols', monospace; }
-
 /* Override shared theme toggle to use icon style */
 #theme-toggle {
   padding: 8px 10px;
