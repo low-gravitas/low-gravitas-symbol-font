@@ -30,7 +30,10 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/LowGravitasSymbols.ttf
+          files: |
+            dist/LowGravitasSymbols.ttf
+            site/glyphs.json
+            site/low-gravitas-symbols.css
           generate_release_notes: true
 
       - name: Generate hub token
