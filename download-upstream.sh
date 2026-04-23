@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-for cmd in curl jq unzip; do
+for cmd in curl gh jq unzip; do
   if ! command -v "$cmd" &>/dev/null; then
     echo "ERROR: $cmd is not installed."
     echo "  brew install $cmd"
@@ -19,11 +19,13 @@ curl -fsSL "https://microsoft.github.io/vscode-codicons/dist/codicon.ttf" \
 echo "  -> vendor/upstream-codicons/codicon.ttf"
 
 echo "Downloading latest Font Awesome Free from GitHub..."
-FA_VERSION=$(curl -fsSL https://api.github.com/repos/FortAwesome/Font-Awesome/releases/latest | jq -r '.tag_name')
-curl -fsSL "https://github.com/FortAwesome/Font-Awesome/releases/download/${FA_VERSION}/fontawesome-free-${FA_VERSION}-desktop.zip" \
-  -o /tmp/fa-desktop.zip
-unzip -o /tmp/fa-desktop.zip -d vendor/upstream-fa/
-rm -f /tmp/fa-desktop.zip
+FA_VERSION=$(gh release view --repo FortAwesome/Font-Awesome --json tagName -q '.tagName')
+gh release download "$FA_VERSION" \
+  --repo FortAwesome/Font-Awesome \
+  --pattern "fontawesome-free-${FA_VERSION}-desktop.zip" \
+  --dir /tmp/
+unzip -o "/tmp/fontawesome-free-${FA_VERSION}-desktop.zip" -d vendor/upstream-fa/
+rm -f "/tmp/fontawesome-free-${FA_VERSION}-desktop.zip"
 echo "  -> vendor/upstream-fa/ (version ${FA_VERSION})"
 
 echo "Downloading latest Octicons SVGs from npm..."
