@@ -90,7 +90,8 @@ def main():
     with open(css_path, "w") as f:
         f.write("@font-face {\n")
         f.write("  font-family: 'LowGravitasSymbols';\n")
-        f.write("  src: url('LowGravitasSymbols.ttf') format('truetype');\n")
+        f.write("  src: url('LowGravitasSymbols.woff2') format('woff2'),\n")
+        f.write("       url('LowGravitasSymbols.ttf') format('truetype');\n")
         f.write("  font-display: swap;\n")
         f.write("}\n\n")
         f.write("[class^='lg-'],\n[class*=' lg-'] {\n")

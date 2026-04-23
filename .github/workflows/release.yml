@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y fontforge python3-fontforge jq unzip
+          sudo apt-get install -y fontforge python3-fontforge jq unzip woff2
 
       - name: Download NF glyph sources
         run: ./update.sh
@@ -32,6 +32,7 @@ jobs:
         with:
           files: |
             dist/LowGravitasSymbols.ttf
+            dist/LowGravitasSymbols.woff2
             dist/glyphs.json
             dist/low-gravitas-symbols.css
           generate_release_notes: true

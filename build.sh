@@ -7,6 +7,12 @@ if ! command -v fontforge &>/dev/null; then
   exit 1
 fi
 
+if ! command -v woff2_compress &>/dev/null; then
+  echo "ERROR: woff2_compress is not installed."
+  echo "  brew install woff2"
+  exit 1
+fi
+
 if [ ! -d vendor/src/glyphs ]; then
   echo "ERROR: vendor/src/glyphs not found. Run 'make update' first."
   exit 1
@@ -40,7 +46,12 @@ fontforge -script scripts/generate-manifest.py \
   dist/LowGravitasSymbols.ttf dist/glyphs.json
 
 echo ""
+echo "=== Step 7: Generate WOFF2 ==="
+woff2_compress dist/LowGravitasSymbols.ttf
+
+echo ""
 echo "=== Build complete ==="
 echo "Output: dist/LowGravitasSymbols.ttf"
+echo "Output: dist/LowGravitasSymbols.woff2"
 echo "Manifest: dist/glyphs.json"
 echo "CSS: dist/low-gravitas-symbols.css"

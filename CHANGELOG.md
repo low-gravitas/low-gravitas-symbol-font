@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.1] - 2026-04-23
+
+### Added
+- WOFF2 build output (`dist/LowGravitasSymbols.woff2`) — 42% smaller than TTF,
+  generated automatically from the TTF via `woff2_compress` as a new build step
+- WOFF2 listed first in the generated `@font-face` src in `low-gravitas-symbols.css`,
+  with TTF as fallback for environments that don't support WOFF2
+- `woff2_compress` prerequisite check in `build.sh` (`brew install woff2`)
+
 ## [0.3.0] - 2026-03-15
 
 ### Fixed
