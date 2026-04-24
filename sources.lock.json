@@ -1,0 +1,17 @@
+{
+  "codicons": {
+    "version": "0.0.46-5",
+    "license": "CC-BY-4.0",
+    "license_hash": "af5e030844efddbc7ab00dcfea8b019703753d4d9f5172d727c533a492aec665"
+  },
+  "font-awesome": {
+    "version": "7.2.0",
+    "license": "Font Awesome Free License",
+    "license_hash": "20c6f40715a567c97b80f6944beb8bb325835cab47ea7dcab89ee3b8e077eced"
+  },
+  "octicons": {
+    "version": "19.24.1",
+    "license": "MIT",
+    "license_hash": "da259c8bd0de62713ccdcf88910aebca810644f98c2c912bad814fc79ea778df"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "codicons": {
+    "npm_package": "@vscode/codicons",
+    "npm_tag": "next",
+    "font_file": "package/dist/codicon.ttf",
+    "license_file": "package/LICENSE"
+  },
+  "font-awesome": {
+    "github_repo": "FortAwesome/Font-Awesome",
+    "channel": "latest",
+    "asset_pattern": "fontawesome-free-{version}-desktop.zip",
+    "license_file": "fontawesome-free-{version}-desktop/LICENSE.txt"
+  },
+  "octicons": {
+    "npm_package": "@primer/octicons",
+    "npm_tag": "latest",
+    "license_file": "package/LICENSE"
+  }
+}

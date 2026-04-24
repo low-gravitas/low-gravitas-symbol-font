@@ -1,4 +1,6 @@
 #!/bin/bash
+# Downloads upstream fonts at the exact versions pinned in sources.lock.json.
+# For updating to newer versions, use: python3 scripts/update-upstreams.py
 set -euo pipefail
 
 for cmd in curl gh jq unzip; do
@@ -9,41 +11,43 @@ for cmd in curl gh jq unzip; do
   fi
 done
 
-# Downloads latest upstream versions of Codicons, Font Awesome, and Octicons.
+if [ ! -f sources.lock.json ]; then
+  echo "ERROR: sources.lock.json not found."
+  echo "  Run 'python3 scripts/update-upstreams.py' to generate it."
+  exit 1
+fi
+
+CODICONS_VERSION=$(jq -r '.codicons.version' sources.lock.json)
+FA_VERSION=$(jq -r '."font-awesome".version' sources.lock.json)
+OCTICONS_VERSION=$(jq -r '.octicons.version' sources.lock.json)
 
 mkdir -p vendor/upstream-codicons vendor/upstream-fa vendor/upstream-octicons
 
-echo "Downloading latest Codicons from GitHub Pages (built from main branch)..."
-curl -fsSL "https://microsoft.github.io/vscode-codicons/dist/codicon.ttf" \
-  -o vendor/upstream-codicons/codicon.ttf
+echo "Downloading Codicons ${CODICONS_VERSION} from npm..."
+PKG_NAME="codicons-${CODICONS_VERSION}.tgz"
+curl -fsSL \
+  "https://registry.npmjs.org/@vscode/codicons/-/${PKG_NAME}" \
+  | tar xzf - -O package/dist/codicon.ttf \
+  > vendor/upstream-codicons/codicon.ttf
 echo "  -> vendor/upstream-codicons/codicon.ttf"
 
-echo "Downloading latest Font Awesome Free from GitHub..."
-FA_VERSION=$(gh release view --repo FortAwesome/Font-Awesome --json tagName -q '.tagName')
+echo "Downloading Font Awesome ${FA_VERSION} from GitHub..."
 gh release download "$FA_VERSION" \
   --repo FortAwesome/Font-Awesome \
   --pattern "fontawesome-free-${FA_VERSION}-desktop.zip" \
-  --dir /tmp/
+  --dir /tmp/ --clobber
 unzip -o "/tmp/fontawesome-free-${FA_VERSION}-desktop.zip" -d vendor/upstream-fa/
 rm -f "/tmp/fontawesome-free-${FA_VERSION}-desktop.zip"
-echo "  -> vendor/upstream-fa/ (version ${FA_VERSION})"
+echo "  -> vendor/upstream-fa/"
 
-echo "Downloading latest Octicons SVGs from npm..."
-OCTICONS_META=$(curl -fsSL https://registry.npmjs.org/@primer/octicons/latest)
-OCTICONS_VERSION=$(echo "$OCTICONS_META" | jq -r '.version')
-OCTICONS_URL=$(echo "$OCTICONS_META" | jq -r '.dist.tarball')
-curl -fsSL "$OCTICONS_URL" | tar xz -C vendor/upstream-octicons/
-echo "  -> vendor/upstream-octicons/ (version ${OCTICONS_VERSION})"
+echo "Downloading Octicons ${OCTICONS_VERSION} from npm..."
+curl -fsSL \
+  "https://registry.npmjs.org/@primer/octicons/-/octicons-${OCTICONS_VERSION}.tgz" \
+  | tar xz -C vendor/upstream-octicons/
+echo "  -> vendor/upstream-octicons/"
 
 echo "Writing sources manifest..."
-jq -n \
-  --arg fa "$FA_VERSION" \
-  --arg oct "$OCTICONS_VERSION" \
-  '{
-    "codicons": {"ref": "main", "source": "microsoft.github.io/vscode-codicons"},
-    "font-awesome": {"version": $fa, "source": "github.com/FortAwesome/Font-Awesome"},
-    "octicons": {"version": $oct, "source": "npmjs.com/package/@primer/octicons"}
-  }' > vendor/sources.json
+cp sources.lock.json vendor/sources.json
 echo "  -> vendor/sources.json"
 
-echo "Done. Upstream fonts downloaded."
+echo "Done."

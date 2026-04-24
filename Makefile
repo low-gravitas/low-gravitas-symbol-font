@@ -1,10 +1,12 @@
-.PHONY: all update build install clean distclean release
+.PHONY: all update update-upstreams build install clean distclean release
 
 all: build
 
-update:
+update-upstreams:
+	python3 scripts/update-upstreams.py
+
+update: update-upstreams
 	./update.sh
-	./download-upstream.sh
 
 build: vendor/src/glyphs
 	./build.sh
