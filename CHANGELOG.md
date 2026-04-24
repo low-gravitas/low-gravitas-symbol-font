@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.2] - 2026-04-24
+
+### Added
+- Codepoint pin registry (`scripts/pins.py`, `glyphs/codicons-pins.json`,
+  `glyphs/fa-pins.json`, `glyphs/octicons-pins.json`) — each merge script
+  records glyph name → codepoint assignments after each build and reuses
+  them on subsequent builds, preventing codepoint churn across releases
+
+### Fixed
+- Overflow codepoint instability: adding a new upstream glyph that sorts
+  before existing overflow glyphs no longer displaces their codepoints
+- Non-deterministic builds: refreshing the NF-bundled Codicons source could
+  shift which glyphs our merge scripts considered "new", causing different
+  codepoints to be assigned on each CI run
+
+### Removed
+- `share-window` Codicons glyph — was an artifact of an unlocked upstream
+  build prior to `sources.lock.json`; not present in pinned Codicons 0.0.46-5
+
 ## [0.3.1] - 2026-04-23
 
 ### Added
