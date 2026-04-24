@@ -27,6 +27,37 @@ jobs:
       - name: Build font
         run: ./build.sh
 
+      - name: Generate glyph diff
+        run: |
+          CURRENT_TAG="${{ github.ref_name }}"
+          PREV_TAG=$(gh release list --limit 10 --json tagName -q '.[].tagName' \
+            | grep -v "^${CURRENT_TAG}$" | head -1)
+          if [ -n "$PREV_TAG" ]; then
+            mkdir -p /tmp/prev-release
+            if gh release download "$PREV_TAG" --pattern glyphs.json --dir /tmp/prev-release/ 2>/dev/null; then
+              python3 scripts/diff-glyphs.py \
+                --format markdown \
+                --from-version "$PREV_TAG" \
+                --to-version "$CURRENT_TAG" \
+                /tmp/prev-release/glyphs.json \
+                dist/glyphs.json > /tmp/glyph-diff.md
+              python3 scripts/diff-glyphs.py \
+                --format json \
+                --from-version "$PREV_TAG" \
+                --to-version "$CURRENT_TAG" \
+                /tmp/prev-release/glyphs.json \
+                dist/glyphs.json > dist/glyph-changes.json
+            fi
+          fi
+          if [ ! -f /tmp/glyph-diff.md ]; then
+            echo "" > /tmp/glyph-diff.md
+          fi
+          if [ ! -f dist/glyph-changes.json ]; then
+            echo '{"from":null,"to":null,"summary":{"added":0,"removed":0,"renamed":0},"added":[],"removed":[],"renamed":[]}' > dist/glyph-changes.json
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
@@ -34,5 +65,8 @@ jobs:
             dist/LowGravitasSymbols.ttf
             dist/LowGravitasSymbols.woff2
             dist/glyphs.json
+            dist/glyph-changes.json
+            dist/sources.json
             dist/low-gravitas-symbols.css
+          body_path: /tmp/glyph-diff.md
           generate_release_notes: true

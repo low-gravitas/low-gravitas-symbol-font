@@ -50,6 +50,15 @@ echo "=== Step 7: Generate WOFF2 ==="
 woff2_compress dist/LowGravitasSymbols.ttf
 
 echo ""
+echo "=== Step 8: Copy sources manifest ==="
+if [ -f vendor/sources.json ]; then
+  cp vendor/sources.json dist/sources.json
+  echo "Sources: dist/sources.json"
+else
+  echo "(vendor/sources.json not found — skipping; run download-upstream.sh first)"
+fi
+
+echo ""
 echo "=== Build complete ==="
 echo "Output: dist/LowGravitasSymbols.ttf"
 echo "Output: dist/LowGravitasSymbols.woff2"
