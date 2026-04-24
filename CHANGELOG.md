@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.3] - 2026-04-24
+
+### Fixed
+- Corrected swapped glyph name assignments in the Codicons pin registry introduced
+  in v0.3.2: `new-session` (U+EC84), `chat-import` (U+F5000), `chat-export`
+  (U+F5001), and `vm-pending` (U+F5002) are now correctly named per upstream
+  Codicons
+- `update-upstreams.py` next-steps hint had the `diff-glyphs.py` argument order
+  reversed (old/new swapped)
+
 ## [0.3.2] - 2026-04-24
 
 ### Added

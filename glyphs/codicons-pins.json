@@ -65,8 +65,8 @@
   "eraser": "0EC5E",
   "file-text": "0EC5F",
   "terminal-secure": "0EC6F",
-  "chat-import": "0EC84",
-  "new-session": "F5000",
-  "vm-pending": "F5001",
-  "chat-export": "F5002"
+  "new-session": "0EC84",
+  "chat-import": "F5000",
+  "chat-export": "F5001",
+  "vm-pending": "F5002"
 }

@@ -221,7 +221,7 @@ def main():
         print("Next steps:")
         print("  1. Run the build: make build")
         print("  2. Review glyph changes: python3 scripts/diff-glyphs.py \\")
-        print("       --format text dist/glyphs.json <previous-glyphs.json>")
+        print("       --format text <previous-glyphs.json> dist/glyphs.json")
         print("  3. Update CHANGELOG.md")
         print("  4. Commit sources.lock.json and CHANGELOG.md")
         print("  5. Cut the release: make release")
